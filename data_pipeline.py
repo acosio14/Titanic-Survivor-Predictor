@@ -33,9 +33,14 @@ def clean_titanic_data(titanic_df):
     train_clean_df = titanic_df[titanic_df['Age'].notna()].dropna()
 
     # Change categorical columns to numeric
-    # To-Do: Figure out if I need to output original categories or if stored in LableEncoder somehow
+    # To-Do: 
+    # - Figure out if I need to output original categories or if stored in LableEncoder somehow
+    # - Try-Catch Error detectioin
+    # - Docstring
     train_clean_df['Sex'] = LabelEncoder().fit_transform(train_clean_df['Sex'])
     train_clean_df['Embarked'] = LabelEncoder().fit_transform(train_clean_df['Embarked'])
 
     return train_clean_df
     
+    # To-Do:
+    # - Create Feature Enginnering File
