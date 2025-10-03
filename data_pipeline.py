@@ -27,10 +27,10 @@ def clean_titanic_data(titanic_df):
     
     # Drop irrelevant columns
     drop_values = ['PassengerId', 'Name', 'Ticket', 'Cabin']
-    train_clean_df = train_clean_df.drop([drop_values], axis=1)   
+    train_df = titanic_df.drop(drop_values, axis=1)   
 
     # Handle Missing Data
-    train_clean_df = titanic_df[titanic_df['Age'].notna()].dropna()
+    train_clean_df = train_df[train_df['Age'].notna()].dropna()
 
     # Change categorical columns to numeric
     # To-Do: 
