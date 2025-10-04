@@ -32,15 +32,35 @@ def clean_titanic_data(titanic_df):
     # Handle Missing Data
     train_clean_df = train_df[train_df['Age'].notna()].dropna()
 
+    # Remove Zero Fare
+    fare_is_not_zero = train_clean_df['Fare'] != 0
+    train_clean_df = train_clean_df[fare_is_not_zero]
     # Change categorical columns to numeric
-    # To-Do: 
+    # To-Do:
     # - Figure out if I need to output original categories or if stored in LableEncoder somehow
     # - Try-Catch Error detectioin
     # - Docstring
-    train_clean_df['Sex'] = LabelEncoder().fit_transform(train_clean_df['Sex'])
-    train_clean_df['Embarked'] = LabelEncoder().fit_transform(train_clean_df['Embarked'])
+    sex_categories = train_clean_df['Sex']
+    embarked_categories = train_clean_df['Embarked']
 
-    return train_clean_df
+    le = LabelEncoder()
+    train_clean_df['Sex'] = le.fit_transform(sex_categories)
+    train_clean_df['Embarked'] = le.fit_transform(embarked_categories)
+
+    return train_clean_df, (sex_categories, embarked_categories)
     
     # To-Do:
     # - Create Feature Enginnering File
+def prepare_titanic_data(titanic_df):
+    """ Prepare data by normalizing, scaling, and divide features/target. """
+
+    # standard scaling -> x_new = X - mu / sigma
+
+    age = titanic_df['Age']
+    fare = titanic_df['Fare']
+
+    new_age = ( age - age.mean() ) / age.std()
+    new_fare = ( fare - fare.mean() ) / fare.std()
+
+    
+    
