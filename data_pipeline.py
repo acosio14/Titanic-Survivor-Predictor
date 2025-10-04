@@ -2,6 +2,7 @@ import pandas as pd
 import os
 
 from sklearn.preprocessing import LabelEncoder
+from sklearn.model_selection import train_test_split
 
 def read_titanic_data(directory, filename):
     """ Read csv file and convert to pandas DataFrame (Data Acquisition)
@@ -51,16 +52,21 @@ def clean_titanic_data(titanic_df):
     
     # To-Do:
     # - Create Feature Enginnering File
-def prepare_titanic_data(titanic_df):
+def prepare_titanic_data(titanic_df, test_size, random_state):
     """ Prepare data by normalizing, scaling, and divide features/target. """
 
     # standard scaling -> x_new = X - mu / sigma
-
     age = titanic_df['Age']
     fare = titanic_df['Fare']
 
-    new_age = ( age - age.mean() ) / age.std()
-    new_fare = ( fare - fare.mean() ) / fare.std()
-
+    titanic_df['Age'] = ( age - age.mean() ) / age.std()
+    titanic_df['Fare'] = ( fare - fare.mean() ) / fare.std()
     
+    # Split features(X) and target(y)
+    X = titanic_df[['Pclass', 'Sex','Age','SibSp','Parch','Fare', 'Embarked']]
+    y = titanic_df['Survived']
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=random_state)
+
+    return titanic_df, (X_train, X_test, y_train, y_test)
+
     
