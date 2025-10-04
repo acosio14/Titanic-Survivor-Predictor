@@ -18,7 +18,20 @@ def logistic_regression(X_train, y_train, X_test, y_test):
         print(f"Model accuracy: {round(accuracy * 100,3)}%")
         print(f"Not returning model.")
 
+def decision_tree():
+    ...
 
+def random_forest():
+    ...
+
+def gradient_boosting():
+    ...
+
+def svm():
+    ...
+
+def evaluate_model():
+    ...
 
 def save_model(model, filepath):
     
