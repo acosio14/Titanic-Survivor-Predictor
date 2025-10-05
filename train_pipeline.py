@@ -1,6 +1,13 @@
 from sklearn.linear_model import LogisticRegression
 from sklearn import tree
-from sklearn.metrics import accuracy_score, confusion_matrix, classification_report, roc_curve, auc
+from sklearn.metrics import (
+    accuracy_score,
+    confusion_matrix,
+    classification_report,
+    roc_curve, 
+    auc,
+    RocCurveDisplay,
+)
 import pickle
 
 class Model:
@@ -37,6 +44,9 @@ class Model:
         y_prob = self.init_model.predict_proba(X_test)
         fpr, tpr, thresholds = roc_curve(y_test, y_prob)
         roc_auc = auc(fpr, tpr)
+
+        # Display ROC Curve
+        roc_disp = RocCurveDisplay.from_preditctions(y_test, y_pred)
 
     def save_model(self, model, filepath):
         
