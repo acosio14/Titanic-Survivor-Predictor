@@ -21,7 +21,7 @@ class Model:
         return model, y_pred
 
     # To-Do: After keeping all models above 80%. Generate table of each with their respective accuracy.
-    def evaluate_model(y_test, y_pred):
+    def evaluate_model(self, X_test, y_test, y_pred):
         
         # Accuracy
         accuracy = accuracy_score(y_test, y_pred)
@@ -34,10 +34,11 @@ class Model:
         print(classification_report(y_test, y_pred))
         
         # ROC Curve and AUC
+        y_prob = self.init_model.predict_proba(X_test)
         fpr, tpr, thresholds = roc_curve(y_test, y_prob)
         roc_auc = auc(fpr, tpr)
 
-    def save_model(model, filepath):
+    def save_model(self, model, filepath):
         
         if not filepath.endswith(".pkl"):
             print(f"Error: {filepath} not .pkl")
