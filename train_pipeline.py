@@ -1,42 +1,41 @@
 from sklearn.linear_model import LogisticRegression
 from sklearn import tree
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report, roc_curve, auc
 import pickle
 
 class Model:
 
     def __init__(self, init_model):
+        """ init_model = LogisticRegression() or tree.DecisionTreeClassifier()"""
         self.init_model = init_model
 
 
-    def train(self, X_train, y_train, X_test, y_test):
+    def train(self, X_train, y_train, X_test):
         
         # Initialize Model, fit, and predict
         model = self.init_model
         model.fit(X_train, y_train)
 
         y_pred = model.predict(X_test)
-        accuracy = accuracy_score(y_test, y_pred)
         
-        #if accuracy >= .8:
+        return model, y_pred
+
+    # To-Do: After keeping all models above 80%. Generate table of each with their respective accuracy.
+    def evaluate_model(y_test, y_pred):
+        
+        # Accuracy
+        accuracy = accuracy_score(y_test, y_pred)
         print(f"Model Accuracy: {round(accuracy * 100,3)}%")
-        return model
-        #else:
-        #    print(f"Model Accuracy: {round(accuracy * 100,3)}%")
-        #    print(f"Not returning model.")
 
+        # Confusion Matrix
+        cm = confusion_matrix(y_test, y_pred)
 
-    def random_forest():
-        ...
-
-    def gradient_boosting():
-        ...
-
-    def svm():
-        ...
-
-    def evaluate_model():
-        ...
+        # Classification Report
+        print(classification_report(y_test, y_pred))
+        
+        # ROC Curve and AUC
+        fpr, tpr, thresholds = roc_curve(y_test, y_prob)
+        roc_auc = auc(fpr, tpr)
 
     def save_model(model, filepath):
         
