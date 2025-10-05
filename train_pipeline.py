@@ -41,12 +41,12 @@ class Model:
         print(classification_report(y_test, y_pred))
         
         # ROC Curve and AUC
-        y_prob = self.init_model.predict_proba(X_test)
+        y_prob = self.init_model.predict_proba(X_test)[:,1]
         fpr, tpr, thresholds = roc_curve(y_test, y_prob)
         roc_auc = auc(fpr, tpr)
 
         # Display ROC Curve
-        roc_disp = RocCurveDisplay.from_preditctions(y_test, y_pred)
+        roc_disp = RocCurveDisplay.from_predictions(y_test, y_pred)
 
     def save_model(self, model, filepath):
         
