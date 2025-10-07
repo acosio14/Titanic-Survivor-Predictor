@@ -1,11 +1,13 @@
 from sklearn.linear_model import LogisticRegression
 from sklearn import tree
+import matplotlib.pyplot as plt
 from sklearn.metrics import (
     accuracy_score,
     confusion_matrix,
     classification_report,
     roc_curve, 
     auc,
+    ConfusionMatrixDisplay,
     RocCurveDisplay,
 )
 import pickle
@@ -32,21 +34,39 @@ class Model:
         
         # Accuracy
         accuracy = accuracy_score(y_test, y_pred)
-        print(f"Model Accuracy: {round(accuracy * 100,3)}%")
 
         # Confusion Matrix
-        cm = confusion_matrix(y_test, y_pred)
+        conf_matrix = confusion_matrix(y_test, y_pred)
 
         # Classification Report
-        print(classification_report(y_test, y_pred))
+        class_report = classification_report(y_test, y_pred)
         
         # ROC Curve and AUC
         y_prob = self.init_model.predict_proba(X_test)[:,1]
         fpr, tpr, thresholds = roc_curve(y_test, y_prob)
         roc_auc = auc(fpr, tpr)
 
+        return accuracy, conf_matrix, class_report, fpr, tpr
+
+    def display_metrics(self, accuracy, confusion_matrix, classification_report, fpr, tpr ):
+
+
+        print(f"Model Accuracy: {round(accuracy * 100,3)}%\n")
+        
+        print(f"Classification Report:\n {classification_report}")
+        
+        # Display Confusion Matrix
+        ConfusionMatrixDisplay(confusion_matrix=confusion_matrix).plot()
+        plt.title("Confusion Matrix")
+        plt.show()
+
         # Display ROC Curve
-        roc_disp = RocCurveDisplay.from_predictions(y_test, y_pred)
+        plt.plot(fpr,tpr)
+        plt.xlabel("False Positive Rate")
+        plt.ylabel("True Positive Rate")
+        plt.title("ROC Curve")
+        plt.show()
+
 
     def save_model(self, model, filepath):
         
