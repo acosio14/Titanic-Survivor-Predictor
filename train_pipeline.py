@@ -14,15 +14,15 @@ import pickle
 
 class Model:
 
-    def __init__(self, init_model):
+    def __init__(self, model):
         """ init_model = LogisticRegression() or tree.DecisionTreeClassifier()"""
-        self.init_model = init_model
+        self.model = model
 
 
     def train(self, X_train, y_train, X_test):
         
         # Initialize Model, fit, and predict
-        model = self.init_model
+        model = self.model
         model.fit(X_train, y_train)
 
         y_pred = model.predict(X_test)
@@ -42,7 +42,7 @@ class Model:
         class_report = classification_report(y_test, y_pred)
         
         # ROC Curve and AUC
-        y_prob = self.init_model.predict_proba(X_test)[:,1]
+        y_prob = self.model.predict_proba(X_test)[:,1]
         fpr, tpr, thresholds = roc_curve(y_test, y_prob)
         roc_auc = auc(fpr, tpr)
 
@@ -50,8 +50,8 @@ class Model:
 
     def display_metrics(self, accuracy, confusion_matrix, classification_report, fpr, tpr ):
 
-        print(f"Model: {str(self.init_model)}\n")
-        
+        print(f"Model: {str(self.model)}\n")
+
         print(f"Model Accuracy: {round(accuracy * 100,3)}%\n")
         
         print(f"Classification Report:\n {classification_report}")
@@ -69,15 +69,15 @@ class Model:
         plt.show()
 
 
-    def save_model(self, model, filepath):
+    def save_model(self, filepath):
         
         if not filepath.endswith(".pkl"):
             print(f"Error: {filepath} not .pkl")
             return
         try:
             with open(filepath,'wb') as file:
-                pickle.dump(model, file)
+                pickle.dump(self.model, file)
 
-            print(f"Saved {model} in {filepath}")
+            print(f"Saved {self.model} in {filepath}")
         except FileNotFoundError:
             print(f"Error: File not found at {filepath}")
