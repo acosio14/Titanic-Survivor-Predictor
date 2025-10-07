@@ -50,7 +50,8 @@ class Model:
 
     def display_metrics(self, accuracy, confusion_matrix, classification_report, fpr, tpr ):
 
-
+        print(f"Model: {str(self.init_model)}\n")
+        
         print(f"Model Accuracy: {round(accuracy * 100,3)}%\n")
         
         print(f"Classification Report:\n {classification_report}")
