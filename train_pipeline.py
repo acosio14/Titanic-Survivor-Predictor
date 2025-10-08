@@ -77,7 +77,8 @@ class Model:
         try:
             with open(filepath,'wb') as file:
                 pickle.dump(self.model, file)
-
-            print(f"Saved {self.model} in {filepath}")
+            
+            model_name = str(self.model).split('()')[0]
+            print(f"Saved model '{model_name}' as {filepath}")
         except FileNotFoundError:
             print(f"Error: File not found at {filepath}")
