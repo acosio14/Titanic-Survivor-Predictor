@@ -1,5 +1,6 @@
 import torch
 from torch import nn
+import torch.nn.functional as F
 
 class NeuralNetwork(nn.Module):
     def __init__(self):
@@ -10,16 +11,16 @@ class NeuralNetwork(nn.Module):
         self.layer4 = nn.Linear(200, 100)
         self.layer5 = nn.Linear(100, 1)
 
-    # x_in is a tensor of shape (7,1)?
+    # x_in is a tensor of shape (X, 7)
     def forward(self,x_in):
         x = self.layer1(x_in)
-        x = nn.ReLU(x)
-        x = self.layer2(x)
-        x = nn.ReLU(x)
+        x = F.relu(x)
+        x = self.layer2(x) # must be Tensor, not ReLU
+        x = F.relu(x)
         x = self.layer3(x)
-        x = nn.ReLU(x)
+        x = F.relu(x)
         x = self.layer4(x)
-        x = nn.ReLu(x)
+        x = F.relu(x)
         x = self.layer5(x)
 
         return x
