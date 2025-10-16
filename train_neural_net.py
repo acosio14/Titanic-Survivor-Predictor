@@ -4,7 +4,6 @@ from torch import nn
 import torch.nn.functional as F
 import torch.optim as optim
 from torch.utils.data import Dataset
-from datetime import datetime
 
 
 class NeuralNetwork(nn.Module):
@@ -97,18 +96,10 @@ def train_pytorch_model(train_dataloader, test_dataloader, num_epochs):
         print(f"Train Loss: {total_loss / len(train_dataloader)}")
         print(f"Val Loss: {avg_val_loss}")
 
-
-        save_best_model(pytorch_model, avg_val_loss, epoch)
-    
     return pytorch_model
 
 
-def save_best_model(avg_val_loss, model, epoch):
-    best_val_loss = 100000
-    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    
-    if avg_val_loss < best_val_loss:
-        best_val_loss = avg_val_loss
-        model_path = f"trained_models/model_{timestamp}_epoch{epoch}.pth"
-        torch.save(model.state_dict(), model_path)
+def save_model(model, path):
+
+    torch.save(model.state_dict(), "path")
 
