@@ -52,13 +52,17 @@ def convert_df_to_tensor(data_df):
 
 
 def evaluate_pytorch_model(model, loss_fcn, test_dataloader):
-
+    total_loss = 0
     model.eval()
     
     with torch.no_grad():
         for val_inputs, val_targets in test_dataloader:
-            y_pred_val= model(val_inputs)
-            loss = loss_fcn(y_pred_val, val_targets)
+            
+            val_inputs_mps = val_inputs.to(torch.device("mps"))
+            val_targets_mps = val_targets.to(torch.device("mps"))
+
+            y_pred_val= model(val_inputs_mps)
+            loss = loss_fcn(y_pred_val, val_targets_mps)
             total_loss += loss
     
     return total_loss / len(test_dataloader)
@@ -95,11 +99,12 @@ def train_pytorch_model(train_dataloader, test_dataloader, num_epochs):
         print(f"Epoch {epoch + 1}")
         print(f"Train Loss: {total_loss / len(train_dataloader)}")
         print(f"Val Loss: {avg_val_loss}")
+        print()
 
     return pytorch_model
 
 
 def save_model(model, path):
 
-    torch.save(model.state_dict(), "path")
+    torch.save(model.state_dict(), path)
 
