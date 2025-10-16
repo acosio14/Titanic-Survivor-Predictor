@@ -4,6 +4,7 @@ from torch import nn
 import torch.nn.functional as F
 import torch.optim as optim
 from torch.utils.data import Dataset
+from datetime import datetime
 
 
 class NeuralNetwork(nn.Module):
@@ -51,24 +52,37 @@ def convert_df_to_tensor(data_df):
     return torch.from_numpy(data_np)
 
 
-def train_pytorch_model(dataloader, num_epochs):
+def evaluate_pytorch_model(model, loss_fcn, test_dataloader):
+
+    model.eval()
+    
+    with torch.no_grad():
+        for val_inputs, val_targets in test_dataloader:
+            y_pred_val= model(val_inputs)
+            loss = loss_fcn(y_pred_val, val_targets)
+            total_loss += loss
+    
+    return total_loss / len(test_dataloader)
+
+
+def train_pytorch_model(train_dataloader, test_dataloader, num_epochs):
     mps_device = torch.device("mps")
 
     pytorch_model = NeuralNetwork().to(mps_device)
     optimizer = optim.Adam(pytorch_model.parameters(), lr=0.001)
-    criterion = nn.BCEWithLogitsLoss()
+    loss_fcn = nn.BCEWithLogitsLoss()
 
     for epoch in range(num_epochs):
         pytorch_model.train()
         total_loss = 0
-        for features, target in dataloader:
+        for features, target in train_dataloader:
             # Move data to device.
             features_mps = features.to(mps_device)
             target_mps = target.to(mps_device)
             
             # Forward pass.
-            outputs = pytorch_model(features_mps)
-            loss = criterion(outputs,target_mps)
+            y_pred = pytorch_model(features_mps)
+            loss = loss_fcn(y_pred,target_mps)
 
             #Backward pass and optimization
             optimizer.zero_grad()
@@ -77,4 +91,24 @@ def train_pytorch_model(dataloader, num_epochs):
 
             total_loss += loss.item()
 
-        print(f"Epoch {epoch + 1}, Loss: {total_loss / len(dataloader)}")
+        avg_val_loss = evaluate_pytorch_model(pytorch_model, loss_fcn, test_dataloader)
+
+        print(f"Epoch {epoch + 1}")
+        print(f"Train Loss: {total_loss / len(train_dataloader)}")
+        print(f"Val Loss: {avg_val_loss}")
+
+
+        save_best_model(pytorch_model, avg_val_loss, epoch)
+    
+    return pytorch_model
+
+
+def save_best_model(avg_val_loss, model, epoch):
+    best_val_loss = 100000
+    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    
+    if avg_val_loss < best_val_loss:
+        best_val_loss = avg_val_loss
+        model_path = f"trained_models/model_{timestamp}_epoch{epoch}.pth"
+        torch.save(model.state_dict(), model_path)
+
