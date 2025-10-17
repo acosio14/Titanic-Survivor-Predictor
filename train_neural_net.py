@@ -70,6 +70,7 @@ def evaluate_pytorch_model(model, loss_fcn, test_dataloader):
 
 def train_pytorch_model(train_dataloader, test_dataloader, num_epochs):
     mps_device = torch.device("mps")
+    best_avg_loss = 1000000
 
     pytorch_model = NeuralNetwork().to(mps_device)
     optimizer = optim.Adam(pytorch_model.parameters(), lr=0.001)
@@ -101,10 +102,15 @@ def train_pytorch_model(train_dataloader, test_dataloader, num_epochs):
         print(f"Val Loss: {avg_val_loss}")
         print()
 
-    return pytorch_model
+        if avg_val_loss < best_avg_loss:
+            best_avg_loss = avg_val_loss
+            best_epoch = epoch
+            best_model = pytorch_model
+
+    return best_model, best_epoch, best_avg_loss
 
 
-def save_model(model, path):
-
-    torch.save(model.state_dict(), path)
+def save_model(model, epoch, timestamp):
+    
+    torch.save(model.state_dict(), f"trained_models/model_epoch{epoch}_{timestamp}.pth")
 
