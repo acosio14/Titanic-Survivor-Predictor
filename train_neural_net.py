@@ -105,7 +105,9 @@ def train_pytorch_model(train_dataloader, test_dataloader, num_epochs):
 
             total_loss += loss.item()
 
-        avg_val_loss = evaluate_pytorch_model(pytorch_model, loss_fcn, test_dataloader)
+        avg_val_loss, targets, predictions = evaluate_pytorch_model(
+            pytorch_model, loss_fcn, test_dataloader
+        )
         
         print(f"Epoch {epoch + 1}")
         print(f"Train Loss: {total_loss / len(train_dataloader)}")
@@ -121,7 +123,7 @@ def train_pytorch_model(train_dataloader, test_dataloader, num_epochs):
             best_epoch = epoch
             best_model = pytorch_model
 
-    return best_model, best_epoch, best_avg_loss, train_loss_list, val_loss_list, epoch_list
+    return (best_model, best_epoch, best_avg_loss), (train_loss_list, val_loss_list), (targets, predictions)
 
 
 def save_model(model, epoch, timestamp):
