@@ -1,8 +1,8 @@
-import torch
 import numpy as np
-from torch import nn
+import torch
 import torch.nn.functional as F
 import torch.optim as optim
+from torch import nn
 from torch.utils.data import Dataset
 
 

@@ -1,8 +1,8 @@
-import pandas as pd
 import os
 
-from sklearn.preprocessing import LabelEncoder
+import pandas as pd
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder
 
 
 def read_titanic_data(directory, filename):
@@ -38,11 +38,7 @@ def clean_titanic_data(titanic_df):
     # Remove Zero Fare
     fare_is_not_zero = train_clean_df["Fare"] != 0
     train_clean_df = train_clean_df[fare_is_not_zero]
-    # Change categorical columns to numeric
-    # To-Do:
-    # - Figure out if I need to output original categories or if stored in LableEncoder somehow
-    # - Try-Catch Error detectioin
-    # - Docstring
+
     sex_categories = train_clean_df["Sex"]
     embarked_categories = train_clean_df["Embarked"]
 

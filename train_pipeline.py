@@ -1,12 +1,13 @@
+import pickle
+
 import matplotlib.pyplot as plt
 from sklearn.metrics import (
-    accuracy_score,
-    confusion_matrix,
-    classification_report,
-    roc_curve,
     ConfusionMatrixDisplay,
+    accuracy_score,
+    classification_report,
+    confusion_matrix,
+    roc_curve,
 )
-import pickle
 
 
 class Model:
