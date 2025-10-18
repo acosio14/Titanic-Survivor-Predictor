@@ -69,8 +69,8 @@ def evaluate_pytorch_model(model, loss_fcn, test_dataloader):
 
             y_pred_val = (logits > 0).float()
 
-            targets = np.vstack(targets, val_targets.cpu().float())
-            predictions = np.vstack(predictions, y_pred_val.cpu())
+            targets = np.vstack((targets, val_targets.cpu().float()))
+            predictions = np.vstack((predictions, y_pred_val.cpu()))
     
     avg_val_loss = total_loss / len(test_dataloader)
     
@@ -122,8 +122,8 @@ def train_pytorch_model(train_dataloader, test_dataloader, num_epochs):
             best_avg_loss = avg_val_loss
             best_epoch = epoch
             best_model = pytorch_model
-            best_targets = [*targets]
-            best_predictions = [*predictions]
+            best_targets = targets
+            best_predictions = predictions
 
     return (best_model, best_epoch, best_avg_loss), (train_loss_list, val_loss_list), (best_targets, best_predictions)
 
