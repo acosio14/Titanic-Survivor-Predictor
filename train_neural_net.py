@@ -54,8 +54,8 @@ def convert_df_to_tensor(data_df):
 def evaluate_pytorch_model(model, loss_fcn, test_dataloader):
     total_loss = 0
     model.eval()
-    targets = []
-    predictions = []
+    targets = np.empty((0,1))
+    predictions = np.empty((0,1))
 
     with torch.no_grad():
         for val_inputs, val_targets in test_dataloader:
@@ -63,12 +63,14 @@ def evaluate_pytorch_model(model, loss_fcn, test_dataloader):
             val_inputs_mps = val_inputs.to(torch.device("mps"))
             val_targets_mps = val_targets.to(torch.device("mps"))
 
-            y_pred_val= model(val_inputs_mps)
-            loss = loss_fcn(y_pred_val, val_targets_mps)
+            logits= model(val_inputs_mps)
+            loss = loss_fcn(logits, val_targets_mps)
             total_loss += loss
-            
-            targets.append(val_targets.cpu().numpy())
-            predictions.append(y_pred_val.cpu().numpy())
+
+            y_pred_val = (logits > 0).float()
+
+            targets = np.vstack(targets, val_targets.cpu().float())
+            predictions = np.vstack(predictions, y_pred_val.cpu())
     
     avg_val_loss = total_loss / len(test_dataloader)
     
@@ -80,7 +82,6 @@ def train_pytorch_model(train_dataloader, test_dataloader, num_epochs):
     best_avg_loss = 1000000
     train_loss_list = []
     val_loss_list = []
-    epoch_list = []
 
     pytorch_model = NeuralNetwork().to(mps_device)
     optimizer = optim.Adam(pytorch_model.parameters(), lr=0.001)
@@ -95,8 +96,8 @@ def train_pytorch_model(train_dataloader, test_dataloader, num_epochs):
             target_mps = target.to(mps_device)
             
             # Forward pass.
-            y_pred = pytorch_model(features_mps)
-            loss = loss_fcn(y_pred,target_mps)
+            logits = pytorch_model(features_mps)
+            loss = loss_fcn(logits,target_mps)
 
             #Backward pass and optimization
             optimizer.zero_grad()
@@ -116,14 +117,15 @@ def train_pytorch_model(train_dataloader, test_dataloader, num_epochs):
         
         train_loss_list.append(total_loss / len(train_dataloader))
         val_loss_list.append(avg_val_loss.cpu().numpy())
-        epoch_list.append(epoch)
 
         if avg_val_loss < best_avg_loss:
             best_avg_loss = avg_val_loss
             best_epoch = epoch
             best_model = pytorch_model
+            best_targets = [*targets]
+            best_predictions = [*predictions]
 
-    return (best_model, best_epoch, best_avg_loss), (train_loss_list, val_loss_list), (targets, predictions)
+    return (best_model, best_epoch, best_avg_loss), (train_loss_list, val_loss_list), (best_targets, best_predictions)
 
 
 def save_model(model, epoch, timestamp):
