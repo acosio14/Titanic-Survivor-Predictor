@@ -52,6 +52,8 @@ def convert_df_to_tensor(data_df):
 
 
 def evaluate_pytorch_model(model, loss_fcn, test_dataloader):
+    """ Evaluate model. """
+    
     total_loss = 0
     model.eval()
     targets = np.empty((0, 1))
@@ -80,6 +82,8 @@ def evaluate_pytorch_model(model, loss_fcn, test_dataloader):
 
 
 def train_pytorch_model(train_dataloader, test_dataloader, num_epochs):
+    """ Train model. """
+
     mps_device = torch.device("mps")
     best_avg_loss = 1000000
     train_loss_list = []
@@ -136,4 +140,6 @@ def train_pytorch_model(train_dataloader, test_dataloader, num_epochs):
 
 
 def save_model(model, epoch, timestamp):
+    """ Save Model."""
+
     torch.save(model.state_dict(), f"trained_models/model_epoch{epoch}_{timestamp}.pth")

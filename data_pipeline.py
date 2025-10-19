@@ -1,8 +1,8 @@
+import pandas as pd
 import os
 
-import pandas as pd
-from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
+from sklearn.model_selection import train_test_split
 
 
 def read_titanic_data(directory, filename):
@@ -47,9 +47,6 @@ def clean_titanic_data(titanic_df):
     train_clean_df["Embarked"] = le.fit_transform(embarked_categories)
 
     return train_clean_df, (sex_categories, embarked_categories)
-
-    # To-Do:
-    # - Create Feature Enginnering File
 
 
 def prepare_titanic_data(titanic_df, test_size, random_state):

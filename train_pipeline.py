@@ -12,7 +12,6 @@ from sklearn.metrics import (
 
 class Model:
     def __init__(self, model):
-        """init_model = LogisticRegression() or tree.DecisionTreeClassifier()"""
         self.model = model
 
     def train(self, X_train, y_train, X_test):
@@ -25,6 +24,8 @@ class Model:
         return model, y_pred
 
     def evaluate_model(self, X_test, y_test, y_pred):
+        """" Evaluate model. """
+        
         # Accuracy
         accuracy = accuracy_score(y_test, y_pred)
 
@@ -43,6 +44,8 @@ class Model:
     def display_metrics(
         self, accuracy, confusion_matrix, classification_report, fpr, tpr
     ):
+        """ Display performance metrics. """
+
         print(f"Model: {str(self.model)}\n")
 
         print(f"Model Accuracy: {round(accuracy * 100, 3)}%\n")
@@ -62,6 +65,8 @@ class Model:
         plt.show()
 
     def save_model(self, filepath):
+        """ Save sci-kit learn model. """
+
         if not filepath.endswith(".pkl"):
             print(f"Error: {filepath} not .pkl")
             return
