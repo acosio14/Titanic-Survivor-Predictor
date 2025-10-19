@@ -8,7 +8,7 @@ from sklearn.model_selection import train_test_split
 def read_titanic_data(directory, filename):
     """Read csv file and convert to pandas DataFrame (Data Acquisition)
 
-    Ags:
+    Args:
         directory: path of file
         filename: name of file
 
